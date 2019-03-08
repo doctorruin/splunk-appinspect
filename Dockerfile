@@ -1,14 +1,13 @@
 FROM alpine:3.9
 LABEL "splunk-appinspect-version"="1.6.1"
-RUN apk add --update --no-cache python py-pip g++ gcc libxml2-dev libxslt-dev libmagic py-lxml python-dev &&\
-        adduser -S splunk-appinspect-user &&\
-        wget -c http://dev.splunk.com/goto/appinspectdownload -O splunk-appinspect-1.6.1.tar.gz &&\
-        pip install --no-cache-dir splunk-appinspect-1.6.1.tar.gz &&\
-        rm -rf splunk-appinspect-1.6.1.tar.gz &&\
-        apk del build-base &&\
-        adduser -S splunk
+RUN apk add --update --no-cache --virtual .build-deps \
+        g++ gcc libxml2-dev libxslt-dev python-dev &&\
+        apk add --no-cache python py-pip py-lxml libmagic &&\
+        adduser -S splunk &&\
+        pip install --no-cache-dir http://dev.splunk.com/goto/appinspectdownload &&\
+        apk del .build-deps &&\
+        chown -R splunk: /home/splunk
 USER splunk
-
 WORKDIR /home/splunk
 HEALTHCHECK --interval=1m --timeout=3s \
   CMD splunk-appinspect --help || exit 1
