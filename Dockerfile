@@ -5,8 +5,10 @@ RUN apk add --update --no-cache python py-pip g++ gcc libxml2-dev libxslt-dev li
         wget -c http://dev.splunk.com/goto/appinspectdownload -O splunk-appinspect-1.6.1.tar.gz &&\
         pip install --no-cache-dir splunk-appinspect-1.6.1.tar.gz &&\
         rm -rf splunk-appinspect-1.6.1.tar.gz &&\
+        apk del build-base &&\
         adduser -S splunk
 USER splunk
+
 WORKDIR /home/splunk
 HEALTHCHECK --interval=1m --timeout=3s \
   CMD splunk-appinspect --help || exit 1
