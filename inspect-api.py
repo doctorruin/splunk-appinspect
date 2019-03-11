@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from subprocess import PIPE
 from waitress import serve
 
-UPLOAD_FOLDER = '/home/splunk/'
+UPLOAD_FOLDER = '/mnt/c/Users/rabey/PycharmProjects/splunk-appinspect/'
 ALLOWED_EXTENSIONS = {'tar', 'spl', 'gz'}
 d = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
@@ -82,23 +82,26 @@ def upload_file():
         filename_wout_ext = filename(filename_w_ext)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_w_ext))
         sub_cmd = ['splunk-appinspect', 'inspect', UPLOAD_FOLDER + filename_w_ext]
-        is_json = request.args.getlist('json')
+        is_mode = request.args.get('mode')
+        is_json = request.args.get('json')
         is_included_tags = request.args.getlist('included_tags')
         is_excluded_tags = request.args.getlist('excluded_tags')
-        if is_json:
+
+        if is_json == 'true':
             sub_cmd.extend(['--output-file', UPLOAD_FOLDER + filename_wout_ext + '_inspect-out_' + str(d) + '.txt',
                             '--data-format', 'json'])
+        if is_mode:
+            sub_cmd.append('--mode')
+            sub_cmd.append(is_mode)
         if is_included_tags:
             sub_cmd.append('--included-tags')
-            sub_cmd.extend(request.args.getlist('included_tags'))
+            sub_cmd.extend(is_included_tags)
         if is_excluded_tags:
             sub_cmd.append('--excluded-tags')
-            sub_cmd.extend(request.args.getlist('excluded_tags'))
-        if request.args.getlist('mode'):
-            sub_cmd.append('--mode')
-            sub_cmd.extend(request.args.getlist('mode'))
+            sub_cmd.extend(is_excluded_tags)
+
         try:
-            if is_json:
+            if is_json == 'true':
                 fnull = open(os.devnull, 'w')
                 subprocess.call(sub_cmd, stdout=fnull, stderr=fnull)
                 data = file_read(filename_wout_ext)
@@ -122,10 +125,21 @@ def appinspect_list():
         if check_args(request.args.getlist('list_type'), 'list'):
             list_args = request.args.getlist('list_type')
             sub_cmd = ['splunk-appinspect', 'list']
+            is_included_tags = request.args.getlist('included_tags')
+            is_excluded_tags = request.args.getlist('excluded_tags')
+
             if 'help' in list_args:
                 sub_cmd.append('--help')
             else:
                 sub_cmd.extend(list_args)
+
+            if is_included_tags:
+                sub_cmd.append('--included-tags')
+                sub_cmd.extend(request.args.getlist('included_tags'))
+            if is_excluded_tags:
+                sub_cmd.append('--excluded-tags')
+                sub_cmd.extend(request.args.getlist('excluded_tags'))
+
             inspect = subprocess.Popen(sub_cmd,
                                        stdout=PIPE, stderr=PIPE)
             (out, err) = inspect.communicate()
@@ -159,5 +173,5 @@ def handle_invalid_usage(error):
 
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=5000)
-
+    # serve(app, host='0.0.0.0', port=5000)
+    app.run()
