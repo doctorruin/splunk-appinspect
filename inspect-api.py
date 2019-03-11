@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from subprocess import PIPE
 from waitress import serve
 
-UPLOAD_FOLDER = '/mnt/c/Users/rabey/PycharmProjects/splunk-appinspect/'
+UPLOAD_FOLDER = '/home/splunk/'
 ALLOWED_EXTENSIONS = {'tar', 'spl', 'gz'}
 d = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
