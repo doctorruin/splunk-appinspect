@@ -81,28 +81,37 @@ def upload_file():
         filename_w_ext = secure_filename(file.filename)
         filename_wout_ext = filename(filename_w_ext)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_w_ext))
-        sub_cmd = ['splunk-appinspect', 'inspect', UPLOAD_FOLDER + filename_w_ext,
-                   '--output-file', UPLOAD_FOLDER + filename_wout_ext + '_inspect-out_' + str(d) + '.txt',
-                   '--data-format', 'json']
-        if request.args.getlist('included_tags'):
+        sub_cmd = ['splunk-appinspect', 'inspect', UPLOAD_FOLDER + filename_w_ext]
+        is_json = request.args.getlist('json')
+        is_included_tags = request.args.getlist('included_tags')
+        is_excluded_tags = request.args.getlist('excluded_tags')
+        if is_json:
+            sub_cmd.extend(['--output-file', UPLOAD_FOLDER + filename_wout_ext + '_inspect-out_' + str(d) + '.txt',
+                            '--data-format', 'json'])
+        if is_included_tags:
             sub_cmd.append('--included-tags')
             sub_cmd.extend(request.args.getlist('included_tags'))
-        if request.args.getlist('excluded_tags'):
+        if is_excluded_tags:
             sub_cmd.append('--excluded-tags')
             sub_cmd.extend(request.args.getlist('excluded_tags'))
         if request.args.getlist('mode'):
             sub_cmd.append('--mode')
             sub_cmd.extend(request.args.getlist('mode'))
-
         try:
-            fnull = open(os.devnull, 'w')
-            subprocess.call(sub_cmd, stdout=fnull, stderr=fnull)
-            data = file_read(filename_wout_ext)
-            resp = jsonify(data)
-            resp.status_code = 200
-            return resp
+            if is_json:
+                fnull = open(os.devnull, 'w')
+                subprocess.call(sub_cmd, stdout=fnull, stderr=fnull)
+                data = file_read(filename_wout_ext)
+                resp = jsonify(data)
+                resp.status_code = 200
+            else:
+                inspect = subprocess.Popen(sub_cmd, stdout=PIPE, stderr=PIPE)
+                (out, err) = inspect.communicate()
+                resp = out
+
         except subprocess.CalledProcessError as e:
             raise InvalidUsage(e, status_code=500)
+        return resp
     else:
         raise InvalidUsage('Method must be POST', status_code=410)
 
@@ -151,3 +160,4 @@ def handle_invalid_usage(error):
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)
+
