@@ -1,12 +1,12 @@
 # Splunk-Appinspect w/ API
 Splunk Appinspect Docker build with API
 
-###Docker usage:
+### Docker usage:
 docker run -d -p 5000:5000 doctorruin/splunk-appinspect
 
-###API usage:
+### API usage:
 
-####list
+#### List
     GET /list
     
     Implementation Notes:
@@ -26,7 +26,7 @@ docker run -d -p 5000:5000 doctorruin/splunk-appinspect
     Appinspect Doc:
     http://dev.splunk.com/view/appinspect/SP-CAAAFAM#scr
     
-####inspect
+#### Lnspect
     POST /inspect
     
     Implementation Notes:
@@ -52,14 +52,14 @@ docker run -d -p 5000:5000 doctorruin/splunk-appinspect
     Appinspect Doc:
     http://dev.splunk.com/view/appinspect/SP-CAAAFAM#scr
     
-###Tags
+### Tags
 
 Tag Reference: http://dev.splunk.com/view/appinspect/SP-CAAAFB2
 
-####Filtering on multiple tags
+#### Filtering on multiple tags
 You can append additional instances of the --included-tags and --excluded-tags command options to add more filtering.
 
-####Filtering precedence
+#### Filtering precedence
 The --included-tags option will always take precedence over the --excluded-tags option.
 
 // This will show only groups and checks with the appapproval tag
