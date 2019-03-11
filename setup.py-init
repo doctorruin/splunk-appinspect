@@ -1,0 +1,18 @@
+from setuptools import setup
+
+setup(
+    name='splunk-appinspect-cli-api',
+    version='1.0.0',
+    entry_points={
+        'console_scripts':
+            ['inspect-api=splunk_appinspect_cli_api.inspect-api:main'],
+    },
+    packages=['splunk_appinspect_cli_api'],
+    url='https://github.com/doctorruin/splunk-appinspect/releases/tag/v1.1.0',
+    license='Apache 2.0',
+    author='Randolph Abeyta',
+    author_email='randolphzemail@gmail.com',
+    description='Docker container with Splunk Appinspect CLI and communication with tool through this API',
+    install_requires=['flask', 'werkzeug', 'waitress']
+
+)

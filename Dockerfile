@@ -1,13 +1,21 @@
 FROM alpine:3.9
 LABEL "splunk-appinspect-version"="1.6.1"
+
+RUN mkdir -p /home/splunk/app
+COPY inspect-api.py /home/splunk/app
+
 RUN apk add --update --no-cache --virtual .build-deps \
         g++ gcc libxml2-dev libxslt-dev python-dev &&\
         apk add --no-cache python py-pip py-lxml libmagic &&\
-        adduser -S splunk &&\
+        addgroup -S splunk &&\
+        adduser -S splunk -G splunk &&\
+        chown -R splunk:splunk /home/splunk &&\
         pip install --no-cache-dir http://dev.splunk.com/goto/appinspectdownload &&\
-        apk del .build-deps &&\
-        chown -R splunk: /home/splunk
+        pip install --no-cache-dir flask waitress &&\
+        apk del .build-deps
+
 USER splunk
 WORKDIR /home/splunk
+CMD ["python", "/home/splunk/app/inspect-api.py", "&"]
 HEALTHCHECK --interval=1m --timeout=3s \
   CMD splunk-appinspect --help || exit 1
