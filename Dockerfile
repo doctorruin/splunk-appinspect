@@ -3,10 +3,11 @@ LABEL "splunk-appinspect-version"="1.6.1"
 
 RUN mkdir -p /home/splunk/app
 COPY inspect-api.py /home/splunk/app
+COPY custom_checks_splunk_appinspect /home/splunk/custom_checks_splunk_appinspect
 
 RUN apk add --update --no-cache --virtual .build-deps \
-        g++ gcc libxml2-dev libxslt-dev python-dev &&\
-        apk add --no-cache python py-pip py-lxml libmagic &&\
+        g++ gcc libxml2-dev libxslt-dev python-dev py-pip &&\
+        apk add --no-cache python py-lxml libmagic &&\
         addgroup -S splunk &&\
         adduser -S splunk -G splunk &&\
         chown -R splunk:splunk /home/splunk &&\

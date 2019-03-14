@@ -1,16 +1,23 @@
 # Splunk-Appinspect w/ API
 Splunk Appinspect Docker build with API
 
-### Docker usage:
-docker run -d -p 5000:5000 doctorruin/splunk-appinspect
+###  Docker Quickstart
 
-### API usage:
+    docker run -d -p 5000:5000 doctorruin/splunk-appinspect
+
+    curl localhost:5000/list?list_type=version
+
+    Output:
+
+    $: Splunk AppInspect Version 1.6.1
+
+### API
 
 #### List
     GET /list
     
     Implementation Notes:
-        This endpoint returns stdout of CLI list. Allows tag filtering. 
+        This endpoint returns stdout of CLI splunk-appinspect list. Allows tag filtering. 
     
     Parameters:
     Use any combination of groups, checks, or tags to list the groups, checks, and tags, respectively. Use version to see the version of AppInspect currently running.
@@ -19,18 +26,18 @@ docker run -d -p 5000:5000 doctorruin/splunk-appinspect
     excluded_tags   tag ref: http://dev.splunk.com/view/appinspect/SP-CAAAFB2
     
     Example Usage:
-    curl localhost:5000/list?list_type=version
+    curl localhost:5000/list?list_type=help
     
     curl localhost:5000/list?list_type=checks&list_type=groups
 
     Appinspect Doc:
     http://dev.splunk.com/view/appinspect/SP-CAAAFAM#scr
     
-#### Lnspect
+#### Inspect
     POST /inspect
     
     Implementation Notes:
-        This endpoint returns stdout or json of CLI app inspect. Allows tag filtering.
+        This endpoint returns stdout or json of CLI splunk-appinspect inspect. Allows tag filtering.
         Splunk AppInspect's inspect command:
 
         Runs in test mode by default.
@@ -45,9 +52,9 @@ docker run -d -p 5000:5000 doctorruin/splunk-appinspect
     excluded_tags   accepts multiple values. tag ref: http://dev.splunk.com/view/appinspect/SP-CAAAFB2
     
     Example Usage:
-    curl 'localhost:5000/inspect?mode=precert&included_tags=cloud&included_tags=manual' -F 'app_package@myapp.tar.gz'
+    curl 'localhost:5000/inspect?mode=test&included_tags=cloud&included_tags=manual' -F 'app_package@myapp.tar.gz'
     
-    curl 'localhost:5000/inspect?json=true' -F 'app_package@myapp.tar.gz'
+    curl 'localhost:5000/inspect?mode=precert&json=true' -F 'app_package@myapp.tar.gz'
 
     Appinspect Doc:
     http://dev.splunk.com/view/appinspect/SP-CAAAFAM#scr
