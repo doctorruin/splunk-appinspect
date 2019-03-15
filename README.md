@@ -1,17 +1,29 @@
 # Splunk-Appinspect w/ API
-Splunk Appinspect Docker build with API
+Splunk Appinspect Docker build with API. Includes check for regex in default/props.conf file for EXTRACTs.
 
 ###  Docker Quickstart
 
     docker run -d -p 5000:5000 doctorruin/splunk-appinspect
 
-    curl localhost:5000/list?list_type=version
+    curl localhost:5000/version
 
     Output:
 
     $: Splunk AppInspect Version 1.6.1
 
 ### API
+
+#### Version
+    GET /version
+    
+    Implementation Notes:
+        This endpoint returns splunk-appinspect version
+    
+    Parameters:
+    None
+    
+    Example Usage:
+    curl localhost:5000/version
 
 #### List
     GET /list
