@@ -188,43 +188,48 @@ def upload_file():
             inspect_list.append(arg)
 
         # check to make sure args are valid
-        if check_args(inspect_list, 'inspect'):
+        if inspect_list:
+            if check_args(inspect_list, 'inspect'):
 
-            is_mode = request.args.get('mode')
-            is_json = request.args.get('json')
-            is_included_tags = request.args.getlist('included_tags')
-            is_excluded_tags = request.args.getlist('excluded_tags')
+                is_mode = request.args.get('mode')
+                is_json = request.args.get('json')
+                is_included_tags = request.args.getlist('included_tags')
+                is_excluded_tags = request.args.getlist('excluded_tags')
 
-            # if args exist, extend sub_cmd with appropriate flags
-            if is_json == 'true':
-                sub_cmd.extend(['--output-file', UPLOAD_FOLDER + filename_wout_ext + '_inspect-out_' + str(d) + '.txt',
-                                '--data-format', 'json'])
-            if is_mode:
-                sub_cmd.extend(['--mode'])
-                sub_cmd.extend([is_mode])
-            if is_included_tags:
-                sub_cmd.extend(['--included-tags'])
-                sub_cmd.extend(is_included_tags)
-            if is_excluded_tags:
-                sub_cmd.extend(['--excluded-tags'])
-                sub_cmd.extend(is_excluded_tags)
-
-            # add custom check directory to include in splunk-appinspect
-            sub_cmd.extend(['--custom-checks-dir', UPLOAD_FOLDER + 'custom_checks_splunk_appinspect/'])
-
-            # try subprocess cmd
-            try:
+                # if args exist, extend sub_cmd with appropriate flags
                 if is_json == 'true':
-                    return_subprocess(sub_cmd.cmd, 'call')
-                    data = file_read(filename_wout_ext)
-                    resp = jsonify(data)
-                    resp.status_code = 200
-                else:
-                    inspect = return_subprocess(sub_cmd.cmd, 'popen')
-                    resp = inspect
+                    sub_cmd.extend(['--output-file', UPLOAD_FOLDER + filename_wout_ext + '_inspect-out_' + str(d) + '.txt',
+                                    '--data-format', 'json'])
+                if is_mode:
+                    sub_cmd.extend(['--mode'])
+                    sub_cmd.extend([is_mode])
+                if is_included_tags:
+                    sub_cmd.extend(['--included-tags'])
+                    sub_cmd.extend(is_included_tags)
+                if is_excluded_tags:
+                    sub_cmd.extend(['--excluded-tags'])
+                    sub_cmd.extend(is_excluded_tags)
 
-            except subprocess.CalledProcessError as e:
-                raise InvalidUsage(e, status_code=500)
+                # add custom check directory to include in splunk-appinspect
+                sub_cmd.extend(['--custom-checks-dir', UPLOAD_FOLDER + 'custom_checks_splunk_appinspect/'])
+
+                # try subprocess cmd
+                try:
+                    if is_json == 'true':
+                        return_subprocess(sub_cmd.cmd, 'call')
+                        data = file_read(filename_wout_ext)
+                        resp = jsonify(data)
+                        resp.status_code = 200
+                    else:
+                        inspect = return_subprocess(sub_cmd.cmd, 'popen')
+                        resp = inspect
+
+                except subprocess.CalledProcessError as e:
+                    raise InvalidUsage(e, status_code=500)
+                return resp
+        else:
+            inspect = return_subprocess(sub_cmd.cmd, 'popen')
+            resp = inspect
             return resp
     else:
         raise InvalidUsage('Method must be POST', status_code=410)
