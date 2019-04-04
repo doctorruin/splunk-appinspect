@@ -1,6 +1,7 @@
 # import splunk_appinspect !!IMPORTANT!!
 import splunk_appinspect
-import re
+# import any packages you need to perform your checks
+from re import compile
 
 # Docstring to explain the check
 """
@@ -13,7 +14,7 @@ just for valid PCRE regex.
 
 @splunk_appinspect.tags("appapproval", "regex")
 @splunk_appinspect.cert_version(min='1.6.1')  # Specify the version of Splunk AppInspect you're adding to.
-def check_for_valid_regex(app, reporter):
+def check_for_valid_regex_method(app, reporter):
     """
     Look for EXTRACT regex in props.conf and make sure they can compile.
     """
@@ -75,12 +76,14 @@ def check_for_valid_regex(app, reporter):
 
 # method to validate regex
 # noinspection PyBroadException
+
+
 def is_regex_valid(regex):
     # if null, then no regex was in EXTRACT-<class>
     if not regex:
         return False
     try:
-        re.compile(regex)
+        compile(regex)
         return True
     except:
         return False
