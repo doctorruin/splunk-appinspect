@@ -5,21 +5,22 @@ from re import compile
 
 # Docstring to explain the check
 """
-Check EXTRACT regex for PCRE compile. Des not run extraction tests, 
-just for valid PCRE regex.
+Check EXTRACT regex compile. Des not run extraction tests, 
+just for valid regex.
 """
 
 
 # Specify Tags associated with check. This check will be included with any of these tags are specified
 
 @splunk_appinspect.tags("appapproval", "regex")
-@splunk_appinspect.cert_version(min='1.6.1')  # Specify the version of Splunk AppInspect you're adding to.
+@splunk_appinspect.cert_version(min='1.7.0')  # Specify the version of Splunk AppInspect you're adding to.
 def check_for_valid_regex_method(app, reporter):
     """
     Look for EXTRACT regex in props.conf and make sure they can compile.
     """
 
     # Check if default directory exists using the splunk appinspect directory_exists method with the app object
+    global manual_check_message
     if app.directory_exists('default'):
         # Check file_exists method
         if app.file_exists('default', 'props.conf'):
@@ -73,6 +74,7 @@ def check_for_valid_regex_method(app, reporter):
                         manual_check_message = 'Check regex for syntax errors'
                 if not_regex:
                     reporter.manual_check(manual_check_message)
+
 
 # method to validate regex
 # noinspection PyBroadException
