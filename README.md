@@ -65,9 +65,9 @@ Current Appinspect v1.7.0
     excluded_tags   accepts multiple values. tag ref: http://dev.splunk.com/view/appinspect/SP-CAAAFB2
     
     Example Usage:
-    curl 'localhost:5000/inspect?mode=test&included_tags=cloud&included_tags=manual' -F 'app_package@myapp.tar.gz'
+    curl 'localhost:5000/inspect?mode=test&included_tags=cloud&included_tags=manual' -F 'app_package=@myapp.tar.gz'
     
-    curl 'localhost:5000/inspect?mode=precert&json=true' -F 'app_package@myapp.tar.gz'
+    curl 'localhost:5000/inspect?mode=precert&json=true' -F 'app_package=@myapp.tar.gz'
 
     Appinspect Doc:
     http://dev.splunk.com/view/appinspect/SP-CAAAFAM#scr
