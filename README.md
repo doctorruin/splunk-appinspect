@@ -1,5 +1,6 @@
 # Splunk-Appinspect w/ API
 Splunk Appinspect Docker build with API. Includes check for regex in default/props.conf file for EXTRACTs.
+Current Appinspect v1.7.0
 
 ###  Docker Quickstart
 
@@ -9,7 +10,7 @@ Splunk Appinspect Docker build with API. Includes check for regex in default/pro
 
     Output:
 
-    $: Splunk AppInspect Version 1.6.1
+    $: Splunk AppInspect Version 1.7.0
 
 ### API
 

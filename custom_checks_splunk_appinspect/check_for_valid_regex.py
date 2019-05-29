@@ -8,7 +8,7 @@ just for valid PCRE regex.
 
 
 @splunk_appinspect.tags("regex")
-@splunk_appinspect.cert_version(min='1.6.1')  # Specify the version of Splunk AppInspect you're adding to.
+@splunk_appinspect.cert_version(min='1.7.0')  # Specify the version of Splunk AppInspect you're adding to.
 def check_for_valid_regex(app, reporter):
     """
     Look for EXTRACT regex in props.conf and make sure they can compile.

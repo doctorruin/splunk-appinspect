@@ -198,7 +198,8 @@ def upload_file():
 
                 # if args exist, extend sub_cmd with appropriate flags
                 if is_json == 'true':
-                    sub_cmd.extend(['--output-file', UPLOAD_FOLDER + filename_wout_ext + '_inspect-out_' + str(d) + '.txt',
+                    sub_cmd.extend(['--output-file', UPLOAD_FOLDER + filename_wout_ext + '_inspect-out_' + str(d) +
+                                    '.txt',
                                     '--data-format', 'json'])
                 if is_mode:
                     sub_cmd.extend(['--mode'])
@@ -252,4 +253,4 @@ def handle_invalid_usage(error):
 
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=5000)
+    serve(app, host='127.0.0.1', port=5000)
