@@ -1,5 +1,5 @@
 FROM alpine:3.9
-LABEL "splunk-appinspect-version"="1.6.1"
+LABEL "splunk-appinspect-version"="1.7.0"
 
 RUN mkdir -p /home/splunk/app
 COPY inspect-api.py /home/splunk/app
